@@ -4,14 +4,14 @@ import { useMutation } from '@apollo/client';
 import { SIGNUP_USER } from '../graphql/mutations';
 
 interface SignupProps {
-  name: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
 const initialSignupValue: SignupProps = {
-  name: '',
+  username: '',
   email: '',
   password: '',
   confirmPassword: ''
@@ -56,7 +56,7 @@ const Signup = () => {
     try {
       await signupUser({
         variables: {
-          name: signupData.name,
+          username: signupData.username,
           email: signupData.email,
           password: signupData.password,
           role: "sailor",
@@ -77,9 +77,9 @@ const Signup = () => {
           <div className="md:col-span-5 flex flex-col items-start w-full">
             <label className='text-sm font-medium'>Name</label>
             <input
-              type="text" id="name" name="name" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50 appearance-none focus:shadow focus:outline-none"
+              type="text" id="username" name="username" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50 appearance-none focus:shadow focus:outline-none"
               placeholder="Enter Your Name"
-              value={signupData.name}
+              value={signupData.username}
               onChange={(e) => handleInputChange(e)}
               required
             />
