@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../graphql/mutations';
+import { useAuth } from '../context/AuthContext';
 
 interface LoginProps {
     username: string;
@@ -19,12 +20,17 @@ const Login = () => {
     const [loginData, setLoginData] = useState<LoginProps>(initialLoginValue);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
         onCompleted: (data) => {
-          localStorage.setItem('token', data.login.token);
-          localStorage.setItem('user', JSON.stringify(data.login.user));
-          navigate('/home');
+            login(data.login.jwt, {
+              id: data.login.user.id,
+              name: data.login.user.username,
+              email: data.login.user.email,
+            });
+            alert("Your are Successfuly Logged In!!")
+            navigate('/home');
         },
         onError: (error) => {
           console.error("Login error:", error);
@@ -43,24 +49,18 @@ const Login = () => {
         })
     }
 
-    const fillTestCredentials = () => {
-        setLoginData({
-            username: 'testuser',
-            email: 'test@gmail.com',
-            password: '123456789'
-        });
-    }
-
     const handleLoginSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
           await loginUser({
             variables: {
-              username: loginData.username,
-              email: loginData.email,
-              password: loginData.password
+              input: {
+                identifier: loginData.username,
+                password: loginData.password
+              }
             }
           });
+          navigate('/home');
         } catch (err) {
           console.error("Login error:", err);
           setMessage("Please provide valid credentials");
@@ -119,13 +119,6 @@ const Login = () => {
                   disabled={loading}
                 >
                   {loading ? 'Logging in...' : 'Login'}
-                </button>
-                <button 
-                  type="button"
-                  onClick={fillTestCredentials}
-                  className='bg-gray-200 text-gray-700 px-5 py-2 rounded-[8px] text-sm focus:outline-none'
-                >
-                  Use Test Credentials
                 </button>
               </div>
               <h3 className='text-xs text-text font-medium py-3'> Haven't an account? Please <span className='text-blue-500 cursor-pointer' onClick={handleClick}>SignUp</span></h3>

@@ -56,11 +56,11 @@ const Signup = () => {
     try {
       await signupUser({
         variables: {
-          username: signupData.username,
-          email: signupData.email,
-          password: signupData.password,
-          role: "sailor",
-          confirmed: true
+          input: {
+            username: signupData.username,
+            email: signupData.email,
+            password: signupData.password
+          }
         }
       });
     } catch (err) {
