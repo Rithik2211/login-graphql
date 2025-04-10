@@ -30,7 +30,6 @@ const Signup = () => {
     },
     onError: (error) => {
       console.error("Signup error:", error);
-      setMessage(error.message || "Signup failed. Please try again.");
     }
   });
 
